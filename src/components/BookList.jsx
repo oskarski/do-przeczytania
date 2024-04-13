@@ -1,4 +1,4 @@
-import { DeleteBookButton } from "./DeleteBookButton";
+import { BookCard } from "./BookCard";
 
 export const BookList = ({ books, onDeleteBook }) => {
   // Early return
@@ -12,16 +12,11 @@ export const BookList = ({ books, onDeleteBook }) => {
   return (
     <ul className="space-y-4">
       {books.map((book) => (
-        <li key={book.title} className="bg-gray-200 p-6 rounded-lg flex justify-between">
-          <div>
-            <h3 className="text-3xl mb-1">{book.title}</h3>
-            <span className="text-md italic text-gray-700">{book.author}</span>
-          </div>
-
-          <div className="text-right">
-            <DeleteBookButton onDeleteBook={() => onDeleteBook(book)} />
-          </div>
-        </li>
+        <BookCard
+          key={book.title}
+          book={book}
+          onDeleteBook={() => onDeleteBook(book)}
+        />
       ))}
     </ul>
   );
