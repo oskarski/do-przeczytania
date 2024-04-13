@@ -112,6 +112,8 @@ function App() {
         <button className="bg-lime-500 text-white px-4 py-2 rounded hover:bg-lime-700 transition">Dodaj książkę</button>
       </form>
 
+      {books.length === 0 && <h2 className="text-5xl text-center">Brak książek do wyświetlenia. <br /> Dodaj swoją pierwszą ksiażkę :)</h2>}
+
       {books.length > 0 && <ul className="space-y-4">
         {books.map(book =>
           <li key={book.title} className="bg-gray-200 p-6 rounded-lg">
