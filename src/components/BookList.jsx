@@ -13,7 +13,7 @@ export const BookList = ({ books, onDeleteBook, onEditBook }) => {
     <ul className="space-y-4">
       {books.map((book) => (
         <BookCard
-          key={book.title}
+          key={book.id}
           book={book}
           onDeleteBook={() => onDeleteBook(book)}
           onEditBook={onEditBook}
