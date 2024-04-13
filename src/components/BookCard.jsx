@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { DeleteBookButton } from "./DeleteBookButton";
 import { UpdateBookForm } from "./UpdateBookForm";
+import { PinBookButton } from "./PinBookButton";
 
 export const BookCard = ({ book, onDeleteBook, onEditBook }) => {
   const [editMode, setEditMode] = useState(false);
@@ -25,8 +26,11 @@ export const BookCard = ({ book, onDeleteBook, onEditBook }) => {
       )}
 
       <div className="text-right space-x-3">
-        {!book.pinned && <button>Przypnij</button>}
-        {book.pinned && <button>Odepnij</button>}
+        <PinBookButton
+          book={book}
+          onPinBook={() => onEditBook({ ...book, pinned: true })}
+          onUnpinBook={() => onEditBook({ ...book, pinned: false })}
+        />
 
         {!editMode && <button onClick={() => setEditMode(true)}>Edytuj</button>}
         {editMode && <button onClick={() => setEditMode(false)}>Anuluj</button>}
