@@ -16,7 +16,14 @@ function App() {
         }}
       />
 
-      <BookList books={books} />
+      <BookList
+        books={books}
+        onDeleteBook={(bookToDelete) =>
+          setBooks((prev) =>
+            [...prev].filter((book) => book.title !== bookToDelete.title),
+          )
+        }
+      />
     </div>
   );
 }
