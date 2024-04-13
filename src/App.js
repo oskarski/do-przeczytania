@@ -20,7 +20,16 @@ function App() {
         books={books}
         onDeleteBook={(bookToDelete) =>
           setBooks((prev) =>
-            [...prev].filter((book) => book.title !== bookToDelete.title),
+            [...prev].filter((book) => book.id !== bookToDelete.id),
+          )
+        }
+        onEditBook={(bookToUpdate) =>
+          setBooks((prev) =>
+            [...prev].map((book) => {
+              if (book.id === bookToUpdate.id) return bookToUpdate;
+
+              return book;
+            }),
           )
         }
       />

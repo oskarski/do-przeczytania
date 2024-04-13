@@ -3,8 +3,11 @@ import { DeleteBookButton } from "./DeleteBookButton";
 import { Label } from "../ui/Label";
 import { Input } from "../ui/Input";
 import { Button } from "../ui/Button";
+import { validateBookData } from "./validateBookData";
+import { FieldErrorMessage } from "../ui/FieldErrorMessage";
 
-export const BookCard = ({ book, onDeleteBook }) => {
+export const BookCard = ({ book, onDeleteBook, onEditBook }) => {
+  const [errors, setErrors] = useState({});
   const [editMode, setEditMode] = useState(false);
 
   const titleId = useId();
@@ -21,12 +24,36 @@ export const BookCard = ({ book, onDeleteBook }) => {
 
       {editMode && (
         <div>
-          <form>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+
+              const formData = new FormData(e.target);
+
+              const title = formData.get("title");
+              const author = formData.get("author");
+
+              const updateBookData = { title, author };
+              const validationErrors = validateBookData(updateBookData);
+              const hasErrors = Object.keys(validationErrors).length > 0;
+
+              if (hasErrors) {
+                setErrors(validationErrors);
+                return;
+              }
+
+              onEditBook({ id: book.id, ...updateBookData });
+              setErrors({});
+              setEditMode(false);
+            }}
+          >
             <Label htmlFor={titleId}>Tytył książki</Label>
             <Input id={titleId} name="title" defaultValue={book.title} />
+            <FieldErrorMessage error={errors.title} />
 
             <Label htmlFor={authorId}>Autor książki</Label>
             <Input id={authorId} name="author" defaultValue={book.author} />
+            <FieldErrorMessage error={errors.author} />
 
             <div className="mt-3">
               <Button>Zapisz</Button>
@@ -37,7 +64,16 @@ export const BookCard = ({ book, onDeleteBook }) => {
 
       <div className="text-right space-x-3">
         {!editMode && <button onClick={() => setEditMode(true)}>Edytuj</button>}
-        {editMode && <button onClick={() => setEditMode(false)}>Anuluj</button>}
+        {editMode && (
+          <button
+            onClick={() => {
+              setEditMode(false);
+              setErrors({});
+            }}
+          >
+            Anuluj
+          </button>
+        )}
 
         <DeleteBookButton onDeleteBook={onDeleteBook} />
       </div>

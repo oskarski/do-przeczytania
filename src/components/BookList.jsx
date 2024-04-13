@@ -1,6 +1,6 @@
 import { BookCard } from "./BookCard";
 
-export const BookList = ({ books, onDeleteBook }) => {
+export const BookList = ({ books, onDeleteBook, onEditBook }) => {
   // Early return
   if (books.length === 0)
     return (
@@ -16,6 +16,7 @@ export const BookList = ({ books, onDeleteBook }) => {
           key={book.title}
           book={book}
           onDeleteBook={() => onDeleteBook(book)}
+          onEditBook={onEditBook}
         />
       ))}
     </ul>
