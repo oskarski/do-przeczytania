@@ -4,6 +4,8 @@
 //   bar: 2,
 // };
 
+import { useState } from "react"
+
 
 // const { foo } = obj
 
@@ -40,8 +42,26 @@ const Input = (props)=> {
   return <input {...props} className="w-full border border-gray-500 rounded py-1 px-2" />
 }
 
+const FieldErrorMessage = ({ error }) => {
+  if (!error) return null
+
+  return <span className="text-red-700">{error.message}</span>
+}
+
+const validateCreateBookData = (data) => {
+  if (typeof data !== 'object') throw new Error('Expected object, received ' + typeof data);
+
+  const errors = {};
+
+  if (!data.title) errors['title'] = new Error('Tytuł jest wymagany!');
+  if (!data.author) errors['author'] = new Error('Autor jest wymagany!');
+
+  return errors;
+}
 
 function App() {
+  const [errors, setErrors] = useState({});
+
   return (
     <div className="p-4">
       
@@ -54,8 +74,18 @@ function App() {
           const title = formData.get('title');
           const author = formData.get('author');
 
-          console.log({ title, author });
+          const createBookData = { title, author };
+          const validationErrors = validateCreateBookData(createBookData);
+          const hasErrors = Object.keys(validationErrors).length > 0;
 
+          if (hasErrors) {
+            setErrors(validationErrors);
+            return
+          }
+
+          console.log('Dane', createBookData);
+
+          setErrors({});
           e.target.reset();
         }}
         className="bg-gray-200 border-gray-500 border p-5 rounded flex gap-x-4 items-end"
@@ -65,11 +95,13 @@ function App() {
             <Label htmlFor="title" className="block mb-2">Tytuł książki</Label>
             {/* Label({ htmlFor: 'title', className: 'block mb-2', children: 'Tytuł ...' }) */}
             <Input id="title" name="title" type="text" />
+            <FieldErrorMessage error={errors.title} />
           </div>
 
           <div className="flex-1">
             <Label htmlFor="author" className="block mb-2">Autor książki</Label>
             <Input id="author" name="author" type="text" />
+            <FieldErrorMessage error={errors.author} />
           </div>
         </div>
 
