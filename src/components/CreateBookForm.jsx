@@ -3,18 +3,7 @@ import { Input } from "../ui/Input";
 import { Label } from "../ui/Label";
 import { FieldErrorMessage } from "../ui/FieldErrorMessage";
 import { Button } from "../ui/Button";
-
-const validateCreateBookData = (data) => {
-  if (typeof data !== "object")
-    throw new Error("Expected object, received " + typeof data);
-
-  const errors = {};
-
-  if (!data.title) errors["title"] = new Error("Tytuł jest wymagany!");
-  if (!data.author) errors["author"] = new Error("Autor jest wymagany!");
-
-  return errors;
-};
+import { validateBookData } from "./validateBookData";
 
 export const CreateBookForm = ({ onBookCreated }) => {
   const [errors, setErrors] = useState({});
@@ -30,7 +19,7 @@ export const CreateBookForm = ({ onBookCreated }) => {
         const author = formData.get("author");
 
         const createBookData = { title, author };
-        const validationErrors = validateCreateBookData(createBookData);
+        const validationErrors = validateBookData(createBookData);
         const hasErrors = Object.keys(validationErrors).length > 0;
 
         if (hasErrors) {
