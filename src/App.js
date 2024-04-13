@@ -1,52 +1,7 @@
-
-// const obj = {
-//   foo: 1,
-//   bar: 2,
-// };
-
 import { useState } from "react"
-
-
-// const { foo } = obj
-
-// const secondObj = { ...obj }
-
-// console.log(foo);
-
-// const Foo = ({foo, bar}) => {
-//   return <div></div>
-// }
-
-// const Foo = (props) => {
-//   const {foo, bar} = props;
-
-//   return <div></div>
-// }
-
-
-const Label = (props) => {
-  return <label {...props} className="block mb-2" />
-
-  // Spread operator -> przepisanie propsów do `<label />`
-  // return <label 
-  //         {...props}
-  //         // key=props[key]
-  //         // htmlFor={props.htmlFor}
-  //         // className={props.className}
-  //         // children={props.children} *
-  //         className="block mb-2"
-  //         />
-}
-
-const Input = (props)=> {
-  return <input {...props} className="w-full border border-gray-500 rounded py-1 px-2" />
-}
-
-const FieldErrorMessage = ({ error }) => {
-  if (!error) return null
-
-  return <span className="text-red-700">{error.message}</span>
-}
+import { Label } from "./ui/Label"
+import { Input } from "./ui/Input"
+import { FieldErrorMessage } from "./ui/FieldErrorMessage";
 
 const validateCreateBookData = (data) => {
   if (typeof data !== 'object') throw new Error('Expected object, received ' + typeof data);
