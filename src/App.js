@@ -5,6 +5,15 @@ import { BookList } from "./components/BookList";
 function App() {
   const [books, setBooks] = useState([]);
 
+  const sortedBooks = [...books].sort((a, b) => {
+    if (a.pinned && b.pinned) return a.title.localeCompare(b.title);
+
+    if (a.pinned) return -1;
+    if (b.pinned) return 1;
+
+    return a.title.localeCompare(b.title);
+  });
+
   return (
     <div className="p-4 flex flex-col gap-y-8">
       <CreateBookForm
@@ -17,7 +26,7 @@ function App() {
       />
 
       <BookList
-        books={books}
+        books={sortedBooks}
         onDeleteBook={(bookToDelete) =>
           setBooks((prev) =>
             [...prev].filter((book) => book.id !== bookToDelete.id),
