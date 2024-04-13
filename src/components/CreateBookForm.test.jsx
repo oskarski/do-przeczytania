@@ -1,14 +1,15 @@
-import { render, screen } from "@testing-library/react";
+import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { CreateBookForm } from "./CreateBookForm";
 import { act } from "react-dom/test-utils";
+import { renderComponent } from "../../test-helpers/render";
 
 describe("<CreateBookForm />", () => {
   it("allows to add new book", () => {
     // Given
     const onBookCreatedMock = jest.fn();
 
-    render(<CreateBookForm onBookCreated={onBookCreatedMock} />);
+    renderComponent(<CreateBookForm onBookCreated={onBookCreatedMock} />);
 
     // When
     userEvent.type(screen.getByLabelText("Tytuł książki"), "Harry Potter");
@@ -30,7 +31,7 @@ describe("<CreateBookForm />", () => {
     // Given
     const onBookCreatedMock = jest.fn();
 
-    render(<CreateBookForm onBookCreated={onBookCreatedMock} />);
+    renderComponent(<CreateBookForm onBookCreated={onBookCreatedMock} />);
 
     // When & Then
     act(() => userEvent.click(screen.getByText("Dodaj książkę")));
