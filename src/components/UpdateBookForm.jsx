@@ -30,7 +30,7 @@ export const UpdateBookForm = ({ book, onEditBook }) => {
           return;
         }
 
-        onEditBook({ id: book.id, ...updateBookData });
+        onEditBook({ ...book, ...updateBookData });
         setErrors({});
       }}
     >

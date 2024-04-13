@@ -18,7 +18,12 @@ export const CreateBookForm = ({ onBookCreated }) => {
         const title = formData.get("title");
         const author = formData.get("author");
 
-        const createBookData = { id: new Date().getTime(), title, author };
+        const createBookData = {
+          id: new Date().getTime(),
+          title,
+          author,
+          pinned: false,
+        };
         const validationErrors = validateBookData(createBookData);
         const hasErrors = Object.keys(validationErrors).length > 0;
 

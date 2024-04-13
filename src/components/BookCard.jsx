@@ -25,6 +25,9 @@ export const BookCard = ({ book, onDeleteBook, onEditBook }) => {
       )}
 
       <div className="text-right space-x-3">
+        {!book.pinned && <button>Przypnij</button>}
+        {book.pinned && <button>Odepnij</button>}
+
         {!editMode && <button onClick={() => setEditMode(true)}>Edytuj</button>}
         {editMode && <button onClick={() => setEditMode(false)}>Anuluj</button>}
 
