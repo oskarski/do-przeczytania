@@ -63,7 +63,7 @@ function App() {
   const [errors, setErrors] = useState({});
 
   return (
-    <div className="p-4">
+    <div className="p-4 flex flex-col gap-y-8">
       
       <form 
         onSubmit={e => {
@@ -107,6 +107,23 @@ function App() {
 
         <button className="bg-lime-500 text-white px-4 py-2 rounded hover:bg-lime-700 transition">Dodaj książkę</button>
       </form>
+
+      <ul className="space-y-4">
+        <li className="bg-gray-200 p-6 rounded-lg">
+          <h3 className="text-3xl mb-1">Harry Potter i Komnata Tajemnic</h3>
+          <span className="text-md italic text-gray-700">J.K. Rowling</span>
+        </li>
+
+        <li className="bg-gray-200 p-6 rounded-lg">
+          <h3 className="text-3xl mb-1">Harry Potter i Komnata Tajemnic</h3>
+          <span className="text-md italic text-gray-700">J.K. Rowling</span>
+        </li>
+
+        <li className="bg-gray-200 p-6 rounded-lg">
+          <h3 className="text-3xl mb-1">Harry Potter i Komnata Tajemnic</h3>
+          <span className="text-md italic text-gray-700">J.K. Rowling</span>
+        </li>
+      </ul>
 
     </div>
   );
