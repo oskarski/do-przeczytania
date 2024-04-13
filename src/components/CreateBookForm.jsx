@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Input } from "../ui/Input";
 import { Label } from "../ui/Label";
 import { FieldErrorMessage } from "../ui/FieldErrorMessage";
+import { Button } from "../ui/Button";
 
 const validateCreateBookData = (data) => {
   if (typeof data !== "object")
@@ -63,9 +64,7 @@ export const CreateBookForm = ({ onBookCreated }) => {
         </div>
       </div>
 
-      <button className="bg-lime-500 text-white px-4 py-2 rounded hover:bg-lime-700 transition">
-        Dodaj książkę
-      </button>
+      <Button>Dodaj książkę</Button>
     </form>
   );
 };
