@@ -45,7 +45,21 @@ function App() {
   return (
     <div className="p-4">
       
-      <form className="bg-gray-200 border-gray-500 border p-5 rounded flex gap-x-4 items-end">
+      <form 
+        onSubmit={e => {
+          e.preventDefault();
+          
+          const formData = new FormData(e.target);
+
+          const title = formData.get('title');
+          const author = formData.get('author');
+
+          console.log({ title, author });
+
+          e.target.reset();
+        }}
+        className="bg-gray-200 border-gray-500 border p-5 rounded flex gap-x-4 items-end"
+       >
         <div className="flex-1 flex gap-x-4">
           <div className="flex-1">
             <Label htmlFor="title" className="block mb-2">Tytuł książki</Label>
