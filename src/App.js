@@ -61,6 +61,7 @@ const validateCreateBookData = (data) => {
 
 function App() {
   const [errors, setErrors] = useState({});
+  const [books, setBooks] = useState([]);
 
   return (
     <div className="p-4 flex flex-col gap-y-8">
@@ -83,7 +84,10 @@ function App() {
             return
           }
 
-          console.log('Dane', createBookData);
+          // setBooks(prev => {
+          //   return [...prev, createBookData]
+          // });
+          setBooks(prev => [...prev, createBookData]);
 
           setErrors({});
           e.target.reset();
@@ -108,22 +112,14 @@ function App() {
         <button className="bg-lime-500 text-white px-4 py-2 rounded hover:bg-lime-700 transition">Dodaj książkę</button>
       </form>
 
-      <ul className="space-y-4">
-        <li className="bg-gray-200 p-6 rounded-lg">
-          <h3 className="text-3xl mb-1">Harry Potter i Komnata Tajemnic</h3>
-          <span className="text-md italic text-gray-700">J.K. Rowling</span>
-        </li>
-
-        <li className="bg-gray-200 p-6 rounded-lg">
-          <h3 className="text-3xl mb-1">Harry Potter i Komnata Tajemnic</h3>
-          <span className="text-md italic text-gray-700">J.K. Rowling</span>
-        </li>
-
-        <li className="bg-gray-200 p-6 rounded-lg">
-          <h3 className="text-3xl mb-1">Harry Potter i Komnata Tajemnic</h3>
-          <span className="text-md italic text-gray-700">J.K. Rowling</span>
-        </li>
-      </ul>
+      {books.length > 0 && <ul className="space-y-4">
+        {books.map(book =>
+          <li key={book.title} className="bg-gray-200 p-6 rounded-lg">
+            <h3 className="text-3xl mb-1">{book.title}</h3>
+            <span className="text-md italic text-gray-700">{book.author}</span>
+          </li>
+        )}
+      </ul>}
 
     </div>
   );
