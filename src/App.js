@@ -2,22 +2,16 @@ import { useEffect, useState } from "react";
 import { CreateBookForm } from "./components/CreateBookForm";
 import { BookList } from "./components/BookList";
 import { listBooks } from "./api/books";
+import { useQuery, useQueryClient } from "react-query";
 
 function App() {
-  const [books, setBooks] = useState();
-  const [error, setError] = useState();
+  const queryClient = useQueryClient();
 
-  useEffect(() => {
-    listBooks()
-      .then((books) => setBooks(books))
-      .catch(() =>
-        setError(new Error("Wystąpił błąd, prosimy spróbować później")),
-      );
-  }, []);
+  const booksQuery = useQuery("books", listBooks);
 
   const sortedBooks =
-    books &&
-    [...books].sort((a, b) => {
+    booksQuery.data &&
+    [...booksQuery.data].sort((a, b) => {
       if (a.pinned && b.pinned) return a.title.localeCompare(b.title);
 
       if (a.pinned) return -1;
@@ -30,30 +24,28 @@ function App() {
     <div className="p-4 flex flex-col gap-y-8">
       {sortedBooks && (
         <CreateBookForm
-          onBookCreated={(newBook) => {
-            // setBooks(prev => {
-            //   return [...prev, newBook]
-            // });
-            setBooks((prev) => prev && [...prev, newBook]);
-          }}
+          onBookCreated={(newBook) =>
+            queryClient.setQueryData(
+              "books",
+              (prev) => prev && [...prev, newBook],
+            )
+          }
         />
       )}
 
-      {error && (
-        <h2 className="text-5xl text-red-700 text-center">{error.message}</h2>
+      {booksQuery.error && (
+        <h2 className="text-5xl text-red-700 text-center">
+          Wystąpił błąd, prosimy spróbować później
+        </h2>
       )}
 
       {sortedBooks && (
         <BookList
           books={sortedBooks}
-          onDeleteBook={(bookToDelete) =>
-            setBooks(
-              (prev) =>
-                prev && [...prev].filter((book) => book.id !== bookToDelete.id),
-            )
-          }
+          onDeleteBook={() => queryClient.invalidateQueries("books")}
           onEditBook={(bookToUpdate) =>
-            setBooks(
+            queryClient.setQueryData(
+              "books",
               (prev) =>
                 prev &&
                 [...prev].map((book) => {
