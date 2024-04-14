@@ -5,9 +5,19 @@ import { FieldErrorMessage } from "../ui/FieldErrorMessage";
 import { Button } from "../ui/Button";
 import { validateBookData } from "./validateBookData";
 import { createBook } from "../api/books";
+import { useMutation } from "react-query";
 
 export const CreateBookForm = ({ onBookCreated }) => {
   const [errors, setErrors] = useState({});
+
+  const createBookMutation = useMutation(([book]) => createBook(book), {
+    onSuccess: (addedBook, [, form]) => {
+      onBookCreated(addedBook);
+
+      setErrors({});
+      form.reset();
+    },
+  });
 
   return (
     <form
@@ -32,12 +42,7 @@ export const CreateBookForm = ({ onBookCreated }) => {
           return;
         }
 
-        const addedBook = await createBook(createBookData);
-
-        onBookCreated(addedBook);
-
-        setErrors({});
-        e.target.reset();
+        createBookMutation.mutate([createBookData, e.target]);
       }}
       className="bg-gray-200 border-gray-500 border p-5 rounded flex gap-x-4 items-end"
     >
