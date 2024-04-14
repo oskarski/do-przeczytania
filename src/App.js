@@ -1,47 +1,71 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { CreateBookForm } from "./components/CreateBookForm";
 import { BookList } from "./components/BookList";
+import { baseUrl } from "./api/baseUrl";
 
 function App() {
-  const [books, setBooks] = useState([]);
+  const [books, setBooks] = useState();
+  const [error, setError] = useState();
 
-  const sortedBooks = [...books].sort((a, b) => {
-    if (a.pinned && b.pinned) return a.title.localeCompare(b.title);
+  useEffect(() => {
+    fetch(`${baseUrl}/books`)
+      .then((response) => response.json())
+      .then((books) => setBooks(books))
+      .catch(() =>
+        setError(new Error("Wystąpił błąd, prosimy spróbować później")),
+      );
+  }, []);
 
-    if (a.pinned) return -1;
-    if (b.pinned) return 1;
+  const sortedBooks =
+    books &&
+    [...books].sort((a, b) => {
+      if (a.pinned && b.pinned) return a.title.localeCompare(b.title);
 
-    return a.title.localeCompare(b.title);
-  });
+      if (a.pinned) return -1;
+      if (b.pinned) return 1;
+
+      return a.title.localeCompare(b.title);
+    });
 
   return (
     <div className="p-4 flex flex-col gap-y-8">
-      <CreateBookForm
-        onBookCreated={(newBook) => {
-          // setBooks(prev => {
-          //   return [...prev, newBook]
-          // });
-          setBooks((prev) => [...prev, newBook]);
-        }}
-      />
+      {sortedBooks && (
+        <CreateBookForm
+          onBookCreated={(newBook) => {
+            // setBooks(prev => {
+            //   return [...prev, newBook]
+            // });
+            setBooks((prev) => prev && [...prev, newBook]);
+          }}
+        />
+      )}
 
-      <BookList
-        books={sortedBooks}
-        onDeleteBook={(bookToDelete) =>
-          setBooks((prev) =>
-            [...prev].filter((book) => book.id !== bookToDelete.id),
-          )
-        }
-        onEditBook={(bookToUpdate) =>
-          setBooks((prev) =>
-            [...prev].map((book) => {
-              if (book.id === bookToUpdate.id) return bookToUpdate;
+      {error && (
+        <h2 className="text-5xl text-red-700 text-center">{error.message}</h2>
+      )}
 
-              return book;
-            }),
-          )
-        }
-      />
+      {sortedBooks && (
+        <BookList
+          books={sortedBooks}
+          onDeleteBook={(bookToDelete) =>
+            setBooks(
+              (prev) =>
+                prev && [...prev].filter((book) => book.id !== bookToDelete.id),
+            )
+          }
+          onEditBook={(bookToUpdate) =>
+            setBooks(
+              (prev) =>
+                prev &&
+                [...prev].map((book) => {
+                  if (book.id === bookToUpdate.id) return bookToUpdate;
+
+                  return book;
+                }),
+            )
+          }
+        />
+      )}
     </div>
   );
 }

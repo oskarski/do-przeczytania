@@ -4,21 +4,33 @@ import App from "./App";
 import { screen } from "@testing-library/react";
 import { act } from "react-dom/test-utils";
 import { createBook } from "../test-helpers/builders/createBook";
+import { server } from "../test-helpers/msw";
+import { rest } from "msw";
+import { baseUrl } from "./api/baseUrl";
 
-const addNewBook = (book) => {
-  userEvent.type(screen.getByLabelText("Tytuł książki"), book.title);
-  userEvent.type(screen.getByLabelText("Autor książki"), book.author);
+const addNewBook = async (book) => {
+  userEvent.type(await screen.findByLabelText("Tytuł książki"), book.title);
+  userEvent.type(await screen.findByLabelText("Autor książki"), book.author);
 
   act(() => userEvent.click(screen.getByText("Dodaj książkę")));
 };
 
 describe("<App />", () => {
-  it("allows to add new book and renders it", () => {
+  beforeEach(() => {
+    server.use(
+      rest.get(`${baseUrl}/books`, (req, res, ctx) => {
+        // Return empty books from API
+        return res(ctx.json([]));
+      }),
+    );
+  });
+
+  it("allows to add new book and renders it", async () => {
     // Given
     renderComponent(<App />);
 
     // When
-    addNewBook({
+    await addNewBook({
       title: "Harry Potter",
       author: "J.K. Rowling",
     });
@@ -31,11 +43,11 @@ describe("<App />", () => {
     expect(screen.getByLabelText("Autor książki")).toHaveValue("");
   });
 
-  it("allows to remove book", () => {
+  it("allows to remove book", async () => {
     // Given
     renderComponent(<App />);
 
-    addNewBook(createBook());
+    await addNewBook(createBook());
 
     // When
     act(() => userEvent.click(screen.getByText("Usuń")));
@@ -47,11 +59,11 @@ describe("<App />", () => {
     ).toBeInTheDocument();
   });
 
-  it("allows to edit book", () => {
+  it("allows to edit book", async () => {
     // Given
     renderComponent(<App />);
 
-    addNewBook({
+    await addNewBook({
       title: "Harry Pott",
       author: "J.K. Rowli",
     });
@@ -72,11 +84,11 @@ describe("<App />", () => {
     expect(screen.queryByText("J.K. Rowling")).toBeInTheDocument();
   });
 
-  it("allows to pin & unpin book", () => {
+  it("allows to pin & unpin book", async () => {
     // Given
     renderComponent(<App />);
 
-    addNewBook(createBook());
+    await addNewBook(createBook());
 
     // When & Then
     act(() => userEvent.click(screen.getByText("Przypnij")));
