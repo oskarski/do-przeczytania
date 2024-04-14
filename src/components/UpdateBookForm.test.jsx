@@ -72,12 +72,6 @@ describe("<UpdateBookForm />", () => {
         author: "J. Słowacki",
       }),
     );
-    expect(onEditBookMock).toHaveBeenCalledWith({
-      id: 1,
-      title: "Kordian",
-      author: "J. Słowacki",
-      pinned: true,
-    });
     expect(onEditBookMock).toHaveBeenCalledTimes(1);
   });
 });

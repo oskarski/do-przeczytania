@@ -3,7 +3,7 @@ import { DeleteBookButton } from "./DeleteBookButton";
 import { UpdateBookForm } from "./UpdateBookForm";
 import { PinBookButton } from "./PinBookButton";
 
-export const BookCard = ({ book, onDeleteBook, onEditBook }) => {
+export const BookCard = ({ book, onDeleteBook }) => {
   const [editMode, setEditMode] = useState(false);
 
   return (
@@ -16,13 +16,7 @@ export const BookCard = ({ book, onDeleteBook, onEditBook }) => {
       )}
 
       {editMode && (
-        <UpdateBookForm
-          book={book}
-          onEditBook={(updatedBook) => {
-            onEditBook(updatedBook);
-            setEditMode(false);
-          }}
-        />
+        <UpdateBookForm book={book} onEditBook={() => setEditMode(false)} />
       )}
 
       <div className="text-right space-x-3">

@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import { CreateBookForm } from "./components/CreateBookForm";
 import { BookList } from "./components/BookList";
 import { listBooks } from "./api/books";
@@ -51,18 +50,6 @@ function App() {
         <BookList
           books={booksQuery.data}
           onDeleteBook={() => queryClient.invalidateQueries("books")}
-          onEditBook={(bookToUpdate) =>
-            queryClient.setQueryData(
-              "books",
-              (prev) =>
-                prev &&
-                [...prev].map((book) => {
-                  if (book.id === bookToUpdate.id) return bookToUpdate;
-
-                  return book;
-                }),
-            )
-          }
         />
       )}
     </div>

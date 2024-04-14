@@ -5,12 +5,35 @@ import { Input } from "../ui/Input";
 import { FieldErrorMessage } from "../ui/FieldErrorMessage";
 import { Button } from "../ui/Button";
 import { updateBook } from "../api/books";
+import { useMutation, useQueryClient } from "react-query";
 
 export const UpdateBookForm = ({ book, onEditBook }) => {
+  const queryClient = useQueryClient();
+
   const [errors, setErrors] = useState({});
 
   const titleId = useId();
   const authorId = useId();
+
+  const updateBookMutation = useMutation(
+    (updateBookData) => updateBook(book.id, updateBookData),
+    {
+      onSuccess: (updatedBook) => {
+        queryClient.setQueryData(
+          "books",
+          (prev) =>
+            prev &&
+            [...prev].map((book) => {
+              if (book.id === updatedBook.id) return updatedBook;
+
+              return book;
+            }),
+        );
+        onEditBook();
+        setErrors({});
+      },
+    },
+  );
 
   return (
     <form
@@ -31,10 +54,7 @@ export const UpdateBookForm = ({ book, onEditBook }) => {
           return;
         }
 
-        const updatedBook = await updateBook(book.id, updateBookData);
-
-        onEditBook(updatedBook);
-        setErrors({});
+        updateBookMutation.mutate(updateBookData);
       }}
     >
       <Label htmlFor={titleId}>Tytuł książki</Label>
