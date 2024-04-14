@@ -7,22 +7,22 @@ import { useQuery, useQueryClient } from "react-query";
 function App() {
   const queryClient = useQueryClient();
 
-  const booksQuery = useQuery("books", listBooks);
+  const booksQuery = useQuery("books", listBooks, {
+    select: (books) => {
+      return [...books].sort((a, b) => {
+        if (a.pinned && b.pinned) return a.title.localeCompare(b.title);
 
-  const sortedBooks =
-    booksQuery.data &&
-    [...booksQuery.data].sort((a, b) => {
-      if (a.pinned && b.pinned) return a.title.localeCompare(b.title);
+        if (a.pinned) return -1;
+        if (b.pinned) return 1;
 
-      if (a.pinned) return -1;
-      if (b.pinned) return 1;
-
-      return a.title.localeCompare(b.title);
-    });
+        return a.title.localeCompare(b.title);
+      });
+    },
+  });
 
   return (
     <div className="p-4 flex flex-col gap-y-8">
-      {sortedBooks && (
+      {booksQuery.isSuccess && (
         <CreateBookForm
           onBookCreated={(newBook) =>
             queryClient.setQueryData(
@@ -47,9 +47,9 @@ function App() {
         </h2>
       )}
 
-      {sortedBooks && (
+      {booksQuery.data && (
         <BookList
-          books={sortedBooks}
+          books={booksQuery.data}
           onDeleteBook={() => queryClient.invalidateQueries("books")}
           onEditBook={(bookToUpdate) =>
             queryClient.setQueryData(
