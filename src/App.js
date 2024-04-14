@@ -33,6 +33,14 @@ function App() {
         />
       )}
 
+      {booksQuery.isLoading && (
+        <h3 className="text-3xl text-center mt-10">Loading ...</h3>
+      )}
+
+      {booksQuery.isFetching && (
+        <h3 className="text-3xl text-center mt-10">Fetching ...</h3>
+      )}
+
       {booksQuery.error && (
         <h2 className="text-5xl text-red-700 text-center">
           Wystąpił błąd, prosimy spróbować później
