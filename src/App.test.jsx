@@ -133,9 +133,11 @@ describe("<App />", () => {
     // When & Then
     act(() => userEvent.click(screen.getByText("Przypnij")));
 
+    await waitFor(() => expect(updateBookMock).toHaveBeenCalledTimes(1));
     expect(screen.queryByText("Przypnij")).not.toBeInTheDocument();
 
     act(() => userEvent.click(screen.getByText("Odepnij")));
+    await waitFor(() => expect(updateBookMock).toHaveBeenCalledTimes(2));
 
     expect(screen.queryByText("Odepnij")).not.toBeInTheDocument();
 

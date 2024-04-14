@@ -1,5 +1,24 @@
-export const PinBookButton = ({ book, onPinBook, onUnpinBook }) => {
-  if (book.pinned) return <button onClick={onUnpinBook}>Odepnij</button>;
+import { updateBook } from "../api/books";
 
-  return <button onClick={onPinBook}>Przypnij</button>;
+export const PinBookButton = ({ book, onPinBook, onUnpinBook }) => {
+  if (book.pinned)
+    return (
+      <button
+        onClick={() => {
+          updateBook(book.id, { pinned: false }).then(() => onUnpinBook());
+        }}
+      >
+        Odepnij
+      </button>
+    );
+
+  return (
+    <button
+      onClick={() => {
+        updateBook(book.id, { pinned: true }).then(() => onPinBook());
+      }}
+    >
+      Przypnij
+    </button>
+  );
 };
