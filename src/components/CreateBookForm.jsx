@@ -4,13 +4,14 @@ import { Label } from "../ui/Label";
 import { FieldErrorMessage } from "../ui/FieldErrorMessage";
 import { Button } from "../ui/Button";
 import { validateBookData } from "./validateBookData";
+import { createBook } from "../api/books";
 
 export const CreateBookForm = ({ onBookCreated }) => {
   const [errors, setErrors] = useState({});
 
   return (
     <form
-      onSubmit={(e) => {
+      onSubmit={async (e) => {
         e.preventDefault();
 
         const formData = new FormData(e.target);
@@ -19,7 +20,6 @@ export const CreateBookForm = ({ onBookCreated }) => {
         const author = formData.get("author");
 
         const createBookData = {
-          id: new Date().getTime(),
           title,
           author,
           pinned: false,
@@ -32,7 +32,9 @@ export const CreateBookForm = ({ onBookCreated }) => {
           return;
         }
 
-        onBookCreated(createBookData);
+        const addedBook = await createBook(createBookData);
+
+        onBookCreated(addedBook);
 
         setErrors({});
         e.target.reset();

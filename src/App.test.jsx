@@ -1,7 +1,7 @@
 import userEvent from "@testing-library/user-event";
 import { renderComponent } from "../test-helpers/render";
 import App from "./App";
-import { screen } from "@testing-library/react";
+import { screen, waitFor } from "@testing-library/react";
 import { act } from "react-dom/test-utils";
 import { createBook } from "../test-helpers/builders/createBook";
 import { server } from "../test-helpers/msw";
@@ -13,14 +13,28 @@ const addNewBook = async (book) => {
   userEvent.type(await screen.findByLabelText("Autor książki"), book.author);
 
   act(() => userEvent.click(screen.getByText("Dodaj książkę")));
+
+  await waitFor(() => expect(screen.queryByText(book.title)).toBeInTheDocument())
 };
 
 describe("<App />", () => {
+  const createBookMock = jest.fn();
+
   beforeEach(() => {
+    createBookMock.mockReturnValue({
+      id: "123",
+      title: "Harry Potter",
+      author: "J.K. Rowling",
+      pinned: false,
+    });
+    
     server.use(
       rest.get(`${baseUrl}/books`, (req, res, ctx) => {
         // Return empty books from API
         return res(ctx.json([]));
+      }),
+      rest.post(`${baseUrl}/books`, async (req, res, ctx) => {
+        return res(ctx.status(201), ctx.json(createBookMock(await req.json())));
       }),
     );
   });
@@ -61,6 +75,13 @@ describe("<App />", () => {
 
   it("allows to edit book", async () => {
     // Given
+    createBookMock.mockReturnValue({
+      id: "123",
+      title: "Harry Pott",
+      author: "J.K. Rowli",
+      pinned: false,
+    });
+
     renderComponent(<App />);
 
     await addNewBook({
