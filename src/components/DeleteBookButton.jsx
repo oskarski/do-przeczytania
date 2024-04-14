@@ -1,10 +1,13 @@
 import { useState } from "react";
 import { deleteBook } from "../api/books";
+import { useMutation } from "react-query";
 
 export const DeleteBookButton = ({ book, onDeleteBook }) => {
   const [confrimVisible, setConfirmVisible] = useState(false);
 
-  const [error, setError] = useState();
+  const deleteBookMutation = useMutation(() => deleteBook(book.id), {
+    onSuccess: onDeleteBook,
+  });
 
   if (confrimVisible)
     return (
@@ -12,18 +15,23 @@ export const DeleteBookButton = ({ book, onDeleteBook }) => {
         Czy na pewno?
         <div className="flex gap-x-2">
           <button
-            onClick={() => {
-              deleteBook(book.id)
-                .then(() => onDeleteBook())
-                .catch(() => setError(new Error("Wystąpił błąd!")));
-            }}
+            disabled={deleteBookMutation.isLoading}
+            onClick={() => deleteBookMutation.mutate()}
+            className="disabled:text-lime-500"
           >
             Tak
           </button>
-          <button onClick={() => setConfirmVisible(false)}>Nie</button>
+          <button
+            disabled={deleteBookMutation.isLoading}
+            onClick={() => setConfirmVisible(false)}
+            className="disabled:text-lime-500"
+          >
+            Nie
+          </button>
         </div>
-
-        {error && <span className="text-red-700 block">{error.message}</span>}
+        {deleteBookMutation.isError && (
+          <span className="text-red-700 block">Wystąpił błąd!</span>
+        )}
       </>
     );
 
