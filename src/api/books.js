@@ -8,3 +8,8 @@ export const createBook = (book) =>
     method: "POST",
     body: JSON.stringify(book),
   }).then((response) => response.json());
+
+export const deleteBook = (id) =>
+  fetch(`${baseUrl}/books/${id}`, {
+    method: "DELETE",
+  });

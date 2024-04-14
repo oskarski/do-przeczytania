@@ -35,7 +35,7 @@ export const BookCard = ({ book, onDeleteBook, onEditBook }) => {
         {!editMode && <button onClick={() => setEditMode(true)}>Edytuj</button>}
         {editMode && <button onClick={() => setEditMode(false)}>Anuluj</button>}
 
-        <DeleteBookButton onDeleteBook={onDeleteBook} />
+        <DeleteBookButton book={book} onDeleteBook={onDeleteBook} />
       </div>
     </li>
   );

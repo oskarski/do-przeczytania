@@ -14,11 +14,14 @@ const addNewBook = async (book) => {
 
   act(() => userEvent.click(screen.getByText("Dodaj książkę")));
 
-  await waitFor(() => expect(screen.queryByText(book.title)).toBeInTheDocument())
+  await waitFor(() =>
+    expect(screen.queryByText(book.title)).toBeInTheDocument(),
+  );
 };
 
 describe("<App />", () => {
   const createBookMock = jest.fn();
+  const deleteBookMock = jest.fn();
 
   beforeEach(() => {
     createBookMock.mockReturnValue({
@@ -27,7 +30,7 @@ describe("<App />", () => {
       author: "J.K. Rowling",
       pinned: false,
     });
-    
+
     server.use(
       rest.get(`${baseUrl}/books`, (req, res, ctx) => {
         // Return empty books from API
@@ -35,6 +38,10 @@ describe("<App />", () => {
       }),
       rest.post(`${baseUrl}/books`, async (req, res, ctx) => {
         return res(ctx.status(201), ctx.json(createBookMock(await req.json())));
+      }),
+      rest.delete(`${baseUrl}/books/:id`, async (req, res, ctx) => {
+        deleteBookMock();
+        return res(ctx.status(201));
       }),
     );
   });
@@ -68,6 +75,7 @@ describe("<App />", () => {
     act(() => userEvent.click(screen.getByText("Tak")));
 
     // Then
+    await waitFor(() => expect(deleteBookMock).toHaveBeenCalled());
     expect(
       screen.queryByText(/^Brak książek do wyświetlenia/),
     ).toBeInTheDocument();
