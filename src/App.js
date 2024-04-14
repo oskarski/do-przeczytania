@@ -1,15 +1,14 @@
 import { useEffect, useState } from "react";
 import { CreateBookForm } from "./components/CreateBookForm";
 import { BookList } from "./components/BookList";
-import { baseUrl } from "./api/baseUrl";
+import { listBooks } from "./api/books";
 
 function App() {
   const [books, setBooks] = useState();
   const [error, setError] = useState();
 
   useEffect(() => {
-    fetch(`${baseUrl}/books`)
-      .then((response) => response.json())
+    listBooks()
       .then((books) => setBooks(books))
       .catch(() =>
         setError(new Error("Wystąpił błąd, prosimy spróbować później")),
