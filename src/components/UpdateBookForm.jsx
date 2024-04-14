@@ -4,6 +4,7 @@ import { Label } from "../ui/Label";
 import { Input } from "../ui/Input";
 import { FieldErrorMessage } from "../ui/FieldErrorMessage";
 import { Button } from "../ui/Button";
+import { updateBook } from "../api/books";
 
 export const UpdateBookForm = ({ book, onEditBook }) => {
   const [errors, setErrors] = useState({});
@@ -13,7 +14,7 @@ export const UpdateBookForm = ({ book, onEditBook }) => {
 
   return (
     <form
-      onSubmit={(e) => {
+      onSubmit={async (e) => {
         e.preventDefault();
 
         const formData = new FormData(e.target);
@@ -30,7 +31,9 @@ export const UpdateBookForm = ({ book, onEditBook }) => {
           return;
         }
 
-        onEditBook({ ...book, ...updateBookData });
+        const updatedBook = await updateBook(book.id, updateBookData);
+
+        onEditBook(updatedBook);
         setErrors({});
       }}
     >

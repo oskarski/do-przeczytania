@@ -1,10 +1,30 @@
-import { act, screen } from "@testing-library/react";
+import { act, screen, waitFor } from "@testing-library/react";
 import { createBook } from "../../test-helpers/builders/createBook";
 import { renderComponent } from "../../test-helpers/render";
 import { UpdateBookForm } from "./UpdateBookForm";
 import userEvent from "@testing-library/user-event";
+import { server } from "../../test-helpers/msw";
+import { rest } from "msw";
+import { baseUrl } from "../api/baseUrl";
 
 describe("<UpdateBookForm />", () => {
+  const updateBookMock = jest.fn();
+
+  beforeEach(() => {
+    updateBookMock.mockReturnValue({
+      id: 1,
+      title: "Kordian",
+      author: "J. Słowacki",
+      pinned: true,
+    });
+
+    server.use(
+      rest.patch(`${baseUrl}/books/:id`, async (req, res, ctx) => {
+        return res(ctx.status(201), ctx.json(updateBookMock(await req.json())));
+      }),
+    );
+  });
+
   it("prefills the form with book data", () => {
     // Given
     const book = createBook({
@@ -20,7 +40,7 @@ describe("<UpdateBookForm />", () => {
     expect(screen.getByLabelText("Autor książki")).toHaveValue("A. Mickiewicz");
   });
 
-  it("allows to update the book", () => {
+  it("allows to update the book", async () => {
     // Given
     const book = createBook({
       id: 1,
@@ -46,6 +66,12 @@ describe("<UpdateBookForm />", () => {
     act(() => userEvent.click(screen.getByText("Zapisz")));
 
     // Then
+    await waitFor(() =>
+      expect(updateBookMock).toHaveBeenCalledWith({
+        title: "Kordian",
+        author: "J. Słowacki",
+      }),
+    );
     expect(onEditBookMock).toHaveBeenCalledWith({
       id: 1,
       title: "Kordian",

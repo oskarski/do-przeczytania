@@ -22,9 +22,16 @@ const addNewBook = async (book) => {
 describe("<App />", () => {
   const createBookMock = jest.fn();
   const deleteBookMock = jest.fn();
+  const updateBookMock = jest.fn();
 
   beforeEach(() => {
     createBookMock.mockReturnValue({
+      id: "123",
+      title: "Harry Potter",
+      author: "J.K. Rowling",
+      pinned: false,
+    });
+    updateBookMock.mockReturnValue({
       id: "123",
       title: "Harry Potter",
       author: "J.K. Rowling",
@@ -42,6 +49,9 @@ describe("<App />", () => {
       rest.delete(`${baseUrl}/books/:id`, async (req, res, ctx) => {
         deleteBookMock();
         return res(ctx.status(201));
+      }),
+      rest.patch(`${baseUrl}/books/:id`, async (req, res, ctx) => {
+        return res(ctx.status(201), ctx.json(updateBookMock(await req.json())));
       }),
     );
   });
@@ -109,6 +119,7 @@ describe("<App />", () => {
     act(() => userEvent.click(screen.getByText("Zapisz")));
 
     // Then
+    await waitFor(() => expect(updateBookMock).toHaveBeenCalled());
     expect(screen.queryByText("Harry Potter")).toBeInTheDocument();
     expect(screen.queryByText("J.K. Rowling")).toBeInTheDocument();
   });

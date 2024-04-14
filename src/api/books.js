@@ -9,6 +9,12 @@ export const createBook = (book) =>
     body: JSON.stringify(book),
   }).then((response) => response.json());
 
+export const updateBook = (id, book) =>
+  fetch(`${baseUrl}/books/${id}`, {
+    method: "PATCH",
+    body: JSON.stringify(book),
+  }).then((response) => response.json());
+
 export const deleteBook = (id) =>
   fetch(`${baseUrl}/books/${id}`, {
     method: "DELETE",
