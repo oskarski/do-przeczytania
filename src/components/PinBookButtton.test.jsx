@@ -23,16 +23,8 @@ describe("<PinBookButton />", () => {
   it("allows to pin book", async () => {
     // Given
     const book = createBook({ pinned: false });
-    const onPinBookMock = jest.fn();
-    const onUnpinBookMock = jest.fn();
 
-    renderComponent(
-      <PinBookButton
-        book={book}
-        onPinBook={onPinBookMock}
-        onUnpinBook={onUnpinBookMock}
-      />,
-    );
+    renderComponent(<PinBookButton book={book} />);
 
     // When
     userEvent.click(screen.getByText("Przypnij"));
@@ -41,23 +33,13 @@ describe("<PinBookButton />", () => {
     await waitFor(() =>
       expect(updateBookMock).toHaveBeenCalledWith({ pinned: true }),
     );
-    expect(onPinBookMock).toHaveBeenCalledTimes(1);
-    expect(onUnpinBookMock).not.toHaveBeenCalled();
   });
 
   it("allows to unpin book", async () => {
     // Given
     const book = createBook({ pinned: true });
-    const onPinBookMock = jest.fn();
-    const onUnpinBookMock = jest.fn();
 
-    renderComponent(
-      <PinBookButton
-        book={book}
-        onPinBook={onPinBookMock}
-        onUnpinBook={onUnpinBookMock}
-      />,
-    );
+    renderComponent(<PinBookButton book={book} />);
 
     // When
     userEvent.click(screen.getByText("Odepnij"));
@@ -66,7 +48,5 @@ describe("<PinBookButton />", () => {
     await waitFor(() =>
       expect(updateBookMock).toHaveBeenCalledWith({ pinned: false }),
     );
-    expect(onUnpinBookMock).toHaveBeenCalledTimes(1);
-    expect(onPinBookMock).not.toHaveBeenCalled();
   });
 });
