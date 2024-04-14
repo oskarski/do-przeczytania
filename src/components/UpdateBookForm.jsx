@@ -34,7 +34,7 @@ export const UpdateBookForm = ({ book, onEditBook }) => {
         setErrors({});
       }}
     >
-      <Label htmlFor={titleId}>Tytył książki</Label>
+      <Label htmlFor={titleId}>Tytuł książki</Label>
       <Input id={titleId} name="title" defaultValue={book.title} />
       <FieldErrorMessage error={errors.title} />
 
